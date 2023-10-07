@@ -6,7 +6,14 @@ pipeline {
         docker { image 'maven:3.8.1-adoptopenjdk-11' }
       }
       steps {
-        sh 'mvn --version'
+        script ''' script {
+                    // Define the Java code in a separate file
+                    writeFile file: 'HelloWorld.java', text: '''
+public class HelloWorld {
+    public static void main(String[] args) {
+        System.out.println("Hello, World!");
+    }
+}          '''
       }
     }
     stage('Front-end') {
@@ -14,8 +21,9 @@ pipeline {
         docker { image 'node:16-alpine' }
       }
       steps {
-        sh 'node --version'
-      }
+                // Run the Node.js code
+                sh 'node -e "console.log(\\"Hello, World!\\");"'
+            }
     }
   }
 }
